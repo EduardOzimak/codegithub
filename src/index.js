@@ -72,7 +72,10 @@ for (var i = 0; i < n + 1; i++) {
 //vykreslení křivky
 var track = MeshBuilder.CreateLines("track", { points });
 var trn = MeshBuilder.CreateCylinder("trn", { diameter: 0.00001 });
-var freza2 = MeshBuilder.CreateCylinder("freza", { diameter: 20, height: 6 });
+var celist = MeshBuilder.CreateCylinder("celist", {
+  diameter: 0.00001,
+  height: 6
+});
 
 var path3D = new Path3D(points);
 var normals = path3D.getNormals();
@@ -81,6 +84,12 @@ SceneLoader.ImportMesh("", "public/", "EDUARD.obj", scene, function (
 ) {
   trn = noveModely[0];
   trn.scaling = new Vector3(0.45, 0.45, 0.45);
+});
+SceneLoader.ImportMesh("", "public/", "CELIST.obj", scene, function (
+  noveModely
+) {
+  celist = noveModely[0];
+  celist.scaling = new Vector3(0.45, 0.45, 0.45);
 });
 //úhly a rotace
 
@@ -97,7 +106,7 @@ scene.registerAfterRender(function () {
   i = (i + 2) % (n - 2);
   trn.rotate(Axis.Z, sklopeni * theta, Space.WORLD);
   i = (i + 2) % (n - 2);
-  freza2.rotate(Axis.X, 0.1, Space.WORLD);
+  celist.rotate(Axis.Y, 0.2, Space.WORLD);
 });
 
 //fyzika
