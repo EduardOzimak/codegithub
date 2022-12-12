@@ -57,44 +57,47 @@ const light1 = new DirectionalLight(
 //vytvoření cesty
 var points = [];
 var n = 450; //počet bodů
-var r = 50; //radius křivky
+var r = 60; //radius křivky
 for (var i = 0; i < n + 1; i++) {
   points.push(
     new Vector3(
-      (r + (r / 5) * Math.sin((15 * i * Math.PI) / n)) *
+      (r + (r / 10) * Math.sin((2 * i * Math.PI) / n)) *
         Math.sin((2 * i * Math.PI) / n),
       0,
-      (r + (r / 10) * Math.sin((6 * i * Math.PI) / n)) *
+      (r + (r / 10) * Math.sin((2 * i * Math.PI) / n)) *
         Math.cos((2 * i * Math.PI) / n)
     )
   );
 }
 //vykreslení křivky
 var track = MeshBuilder.CreateLines("track", { points });
-var freza = MeshBuilder.CreateCylinder("freza", { diameter: 0.00001 });
-var freza2 = MeshBuilder.CreateCylinder("freza", { diameter: 2, height: 6 });
+var trn = MeshBuilder.CreateCylinder("trn", { diameter: 0.00001 });
+var freza2 = MeshBuilder.CreateCylinder("freza", { diameter: 20, height: 6 });
 
 var path3D = new Path3D(points);
 var normals = path3D.getNormals();
-SceneLoader.ImportMesh("", "public/", "endmill.glb", scene, function (
+SceneLoader.ImportMesh("", "public/", "EDUARD.obj", scene, function (
   noveModely
 ) {
-  freza = noveModely[0];
-  freza.scaling = new Vector3(0.75, 0.75, 0.75);
+  trn = noveModely[0];
+  trn.scaling = new Vector3(0.45, 0.45, 0.45);
 });
 //úhly a rotace
 
 //animace
 var i = 0;
 scene.registerAfterRender(function () {
-  freza.position.x = points[i].x;
-  freza.position.z = points[i].z;
+  trn.position.x = points[i].x;
+  trn.position.z = points[i].z;
 
-  var theta = Math.acos(Vector3.Dot(normals[i], normals[i + 1]));
-  var sklopeni = Vector3.Cross(normals[i], normals[i + 1]).y;
+  var theta = Math.acos(Vector3.Dot(normals[i], normals[i + 3]));
+  var sklopeni = Vector3.Cross(normals[i], normals[i + 3]).y;
   sklopeni = sklopeni / Math.abs(sklopeni);
-  freza.rotate(Axis.Y, sklopeni * theta, Space.WORLD);
-  i = (i + 1) % (n - 1);
+  trn.rotate(Axis.X, sklopeni * theta, Space.WORLD);
+  i = (i + 2) % (n - 2);
+  trn.rotate(Axis.Z, sklopeni * theta, Space.WORLD);
+  i = (i + 2) % (n - 2);
+  freza2.rotate(Axis.X, 0.1, Space.WORLD);
 });
 
 //fyzika
